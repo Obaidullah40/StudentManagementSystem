@@ -11,10 +11,19 @@ void main() {
                 3.75
         );
 
+        Officer officer = new Officer("admin", "1234");
+
+        Course course = new Course(
+                101,
+                "CSE281",
+                "Programming Language II"
+        );
+
         IO.println("Student ID: " + student.getStudentId());
         IO.println("Name: " + student.getName());
         IO.println("Program: " + student.getProgram());
         IO.println("Batch: " + student.getBatch());
         IO.println("CGPA: " + student.getCgpa());
+
 
 }
