@@ -50,50 +50,83 @@ void main() {
                                                                 IO.readln("Student ID: ")
                                                         );
 
-                                                        String name = IO.readln("Name: ");
-                                                        String studentPassword  = IO.readln("Password: ");
-                                                        String program = IO.readln("Program: ");
-
-                                                        int batch = Integer.parseInt(
-                                                                IO.readln("Batch: ")
-                                                        );
-
-                                                        double cgpa = Double.parseDouble(
-                                                                IO.readln("CGPA: ")
-                                                        );
-
-                                                        Student student = new Student(
-                                                                studentId,
-                                                                name,
-                                                                studentPassword,
-                                                                program,
-                                                                batch,
-                                                                cgpa
-                                                        );
-
-                                                        IO.println("Student added successfully.");
+                                                        boolean studentExists = false;
 
                                                         try {
-                                                                RandomAccessFile studentFile  =
-                                                                        new RandomAccessFile("students.txt", "rw");
+                                                                RandomAccessFile checkFile =
+                                                                        new RandomAccessFile("students.txt", "r");
 
-                                                                studentFile.seek(studentFile.length());
+                                                                String checkLine;
 
-                                                                String studentLine  = student.getStudentId() + ","
-                                                                        + student.getName() + ","
-                                                                        + student.getPassword() + ","
-                                                                        + student.getProgram() + ","
-                                                                        + student.getBatch() + ","
-                                                                        + student.getCgpa() + "\n";
+                                                                while ((checkLine = checkFile.readLine()) != null) {
 
-                                                                studentFile.writeBytes(studentLine);
+                                                                        String[] checkData = checkLine.split(",");
 
-                                                                studentFile.close();
+                                                                        int existingId =
+                                                                                Integer.parseInt(checkData[0]);
+
+                                                                        if (existingId == studentId) {
+                                                                                studentExists = true;
+                                                                                break;
+                                                                        }
+                                                                }
+
+                                                                checkFile.close();
+
+                                                        } catch (Exception e) {
+                                                                IO.println("Error checking student ID.");
+                                                        }
+                                                        if (studentExists) {
+
+                                                                IO.println("Student ID already exists.");
+
+                                                        } else {
+
+                                                                String name = IO.readln("Name: ");
+                                                                String studentPassword = IO.readln("Password: ");
+                                                                String program = IO.readln("Program: ");
+
+                                                                int batch = Integer.parseInt(
+                                                                        IO.readln("Batch: ")
+                                                                );
+
+                                                                double cgpa = Double.parseDouble(
+                                                                        IO.readln("CGPA: ")
+                                                                );
+
+                                                                Student student = new Student(
+                                                                        studentId,
+                                                                        name,
+                                                                        studentPassword,
+                                                                        program,
+                                                                        batch,
+                                                                        cgpa
+                                                                );
 
                                                                 IO.println("Student added successfully.");
 
-                                                        } catch (Exception e) {
-                                                                IO.println("Error saving student information.");
+                                                                try {
+                                                                        RandomAccessFile studentFile =
+                                                                                new RandomAccessFile("students.txt", "rw");
+
+                                                                        studentFile.seek(studentFile.length());
+
+                                                                        String studentLine = student.getStudentId() + ","
+                                                                                + student.getName() + ","
+                                                                                + student.getPassword() + ","
+                                                                                + student.getProgram() + ","
+                                                                                + student.getBatch() + ","
+                                                                                + student.getCgpa() + "\n";
+
+                                                                        studentFile.writeBytes(studentLine);
+
+                                                                        studentFile.close();
+
+                                                                        IO.println("Student added successfully.");
+
+                                                                } catch (Exception e) {
+                                                                        IO.println("Error saving student information.");
+                                                                }
                                                         }
 
                                                         break;
@@ -149,10 +182,82 @@ void main() {
 
                                                 case 3:
                                                         IO.println("Assign Course selected.");
+                                                        int courseStudentId = Integer.parseInt(
+                                                                IO.readln("Student ID: ")
+                                                        );
+
+                                                        String courseCode = IO.readln("Course Code: ");
+                                                        String courseName = IO.readln("Course Name: ");
+
+                                                        Course course = new Course(
+                                                                courseStudentId,
+                                                                courseCode,
+                                                                courseName
+                                                        );
+
+                                                        try {
+                                                                RandomAccessFile courseFile =
+                                                                        new RandomAccessFile("courses.txt", "rw");
+
+                                                                courseFile.seek(courseFile.length());
+
+                                                                String courseLine = course.getStudentId() + ","
+                                                                        + course.getCourseCode() + ","
+                                                                        + course.getCourseName() + "\n";
+
+                                                                courseFile.writeBytes(courseLine);
+
+                                                                courseFile.close();
+
+                                                                IO.println("Course assigned successfully.");
+
+                                                        } catch (Exception e) {
+                                                                IO.println("Error saving course information.");
+                                                        }
                                                         break;
 
                                                 case 4:
                                                         IO.println("View Advised Courses selected.");
+                                                        int courseSearchId = Integer.parseInt(
+                                                                IO.readln("Enter Student ID: ")
+                                                        );
+
+                                                        boolean courseFound = false;
+
+                                                        try {
+                                                                RandomAccessFile courseFile =
+                                                                        new RandomAccessFile("courses.txt", "r");
+
+                                                                String courseLine;
+
+                                                                IO.println("\n===== Advised Courses =====");
+
+                                                                while ((courseLine = courseFile.readLine()) != null) {
+
+                                                                        String[] courseData = courseLine.split(",");
+
+                                                                        int fileCourseStudentId =
+                                                                                Integer.parseInt(courseData[0]);
+
+                                                                        if (fileCourseStudentId == courseSearchId) {
+
+                                                                                IO.println("Course Code: " + courseData[1]);
+                                                                                IO.println("Course Name: " + courseData[2]);
+                                                                                IO.println();
+
+                                                                                courseFound = true;
+                                                                        }
+                                                                }
+
+                                                                courseFile.close();
+
+                                                                if (!courseFound) {
+                                                                        IO.println("No advised courses found.");
+                                                                }
+
+                                                        } catch (Exception e) {
+                                                                IO.println("Error reading course information.");
+                                                        }
                                                         break;
 
                                                 case 5:
